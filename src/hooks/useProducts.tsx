@@ -35,7 +35,7 @@ export function useProducts() {
       const res = await fetch(`${API_URL}/products?userId=${user.id}`);
       if (!res.ok) throw new Error('Erro ao buscar produtos');
       const data = await res.json();
-      return data.sort((a: Product, b: Product) => a.name.localeCompare(b.name));
+      return data.sort((first: Product, second: Product) => first.name.localeCompare(second.name));
     },
     enabled: !!user,
   });
@@ -54,7 +54,13 @@ export function useProducts() {
       queryClient.invalidateQueries({ queryKey: ['products'] });
       toast({ title: 'Produto adicionado!' });
     },
-    onError: (e: any) => toast({ title: 'Erro', description: e.message || 'Erro ao adicionar', variant: 'destructive' }),
+    onError: (error: Error) => {
+      toast({
+        title: 'Erro ao adicionar',
+        description: error instanceof Error ? error.message : 'Algo deu errado',
+        variant: 'destructive'
+      });
+    },
   });
 
   const updateProduct = useMutation({
@@ -71,7 +77,13 @@ export function useProducts() {
       queryClient.invalidateQueries({ queryKey: ['products'] });
       toast({ title: 'Produto atualizado!' });
     },
-    onError: (e: any) => toast({ title: 'Erro', description: e.message || 'Erro ao atualizar', variant: 'destructive' }),
+    onError: (error: Error) => {
+      toast({
+        title: 'Erro na atualização',
+        description: error instanceof Error ? error.message : 'Não foi possível atualizar',
+        variant: 'destructive'
+      });
+    },
   });
 
   const deleteProduct = useMutation({
@@ -85,7 +97,13 @@ export function useProducts() {
       queryClient.invalidateQueries({ queryKey: ['products'] });
       toast({ title: 'Produto removido' });
     },
-    onError: (e: any) => toast({ title: 'Erro', description: e.message || 'Erro ao remover', variant: 'destructive' }),
+    onError: (error: Error) => {
+      toast({
+        title: 'Erro na remoção',
+        description: error instanceof Error ? error.message : 'Não foi possível remover',
+        variant: 'destructive'
+      });
+    },
   });
 
   const adjustStock = useMutation({
@@ -111,7 +129,13 @@ export function useProducts() {
       queryClient.invalidateQueries({ queryKey: ['products'] });
       toast({ title: 'Estoque atualizado!' });
     },
-    onError: (e: any) => toast({ title: 'Erro', description: e.message || 'Erro ao ajustar estoque', variant: 'destructive' }),
+    onError: (error: Error) => {
+      toast({
+        title: 'Erro no ajuste',
+        description: error instanceof Error ? error.message : 'Não foi possível ajustar o estoque',
+        variant: 'destructive'
+      });
+    },
   });
 
   return { products: productsQuery.data ?? [], isLoading: productsQuery.isLoading, addProduct, updateProduct, deleteProduct, adjustStock };

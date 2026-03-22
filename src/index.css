@@ -7,35 +7,25 @@
 @layer base {
   :root {
     --background: 210 20% 98%;
-    --foreground: 200 25% 10%;
-
+    --foreground: 205 18% 18%;
     --card: 0 0% 100%;
-    --card-foreground: 200 25% 10%;
-
+    --card-foreground: 210 15% 20%;
     --popover: 0 0% 100%;
-    --popover-foreground: 200 25% 10%;
-
-    --primary: 174 62% 32%;
-    --primary-foreground: 0 0% 100%;
-
-    --secondary: 174 30% 94%;
-    --secondary-foreground: 174 62% 22%;
-
-    --muted: 210 15% 94%;
-    --muted-foreground: 210 10% 46%;
-
-    --accent: 38 92% 55%;
-    --accent-foreground: 38 92% 15%;
-
-    --destructive: 0 72% 51%;
+    --popover-foreground: 210 15% 20%;
+    --primary: 213 57% 55%;
+    --primary-foreground: 210 20% 98%;
+    --secondary: 210 14% 96%;
+    --secondary-foreground: 210 11% 45%;
+    --muted: 210 14% 96%;
+    --muted-foreground: 210 11% 45%;
+    --accent: 213 57% 55%;
+    --accent-foreground: 210 20% 98%;
+    --destructive: 355 70% 57%;
     --destructive-foreground: 0 0% 100%;
-
-    --border: 210 18% 89%;
-    --input: 210 18% 89%;
-    --ring: 174 62% 32%;
-
-    --radius: 0.625rem;
-
+    --border: 214 19% 86%;
+    --input: 214 19% 90%;
+    --ring: 186 84% 45%;
+    --radius: 0.75rem;
     --sidebar-background: 174 62% 22%;
     --sidebar-foreground: 174 10% 95%;
     --sidebar-primary: 0 0% 100%;
@@ -44,16 +34,63 @@
     --sidebar-accent-foreground: 0 0% 100%;
     --sidebar-border: 174 40% 30%;
     --sidebar-ring: 174 62% 42%;
-
     --success: 152 60% 40%;
     --success-foreground: 0 0% 100%;
     --warning: 38 92% 55%;
     --warning-foreground: 38 92% 15%;
   }
+
+  .dark {
+    --background: 220 14% 12%;
+    --foreground: 216 17% 92%;
+    --card: 224 14% 20%;
+    --card-foreground: 216 17% 91%;
+    --popover: 224 14% 20%;
+    --popover-foreground: 216 17% 91%;
+    --primary: 210 45% 62%;
+    --primary-foreground: 220 100% 98%;
+    --secondary: 225 12% 26%;
+    --secondary-foreground: 215 20% 75%;
+    --muted: 225 12% 26%;
+    --muted-foreground: 215 20% 75%;
+    --accent: 210 45% 62%;
+    --accent-foreground: 220 100% 98%;
+    --destructive: 360 68% 58%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 225 15% 29%;
+    --input: 226 16% 24%;
+    --ring: 189 70% 50%;
+    --sidebar-background: 232 18% 16%;
+    --sidebar-foreground: 210 20% 95%;
+    --sidebar-primary: 220 14% 95%;
+    --sidebar-primary-foreground: 232 18% 16%;
+    --sidebar-accent: 210 80% 40%;
+    --sidebar-accent-foreground: 210 20% 96%;
+    --sidebar-border: 226 18% 28%;
+    --sidebar-ring: 188 100% 35%;
+    --success: 150 60% 50%;
+    --success-foreground: 210 14% 95%;
+    --warning: 42 100% 61%;
+    --warning-foreground: 225 100% 98%;
+  }
+
+  html, body {
+    @apply bg-background text-foreground;
+    transition: background-color 0.35s ease, color 0.35s ease, border-color 0.35s ease;
+  }
+
+  button,
+  input,
+  select,
+  textarea {
+    transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+  }
 }
+
 
 @layer base {
   * {
+    transition: background-color 0.35s ease, color 0.35s ease, border-color 0.35s ease;
     @apply border-border;
   }
 

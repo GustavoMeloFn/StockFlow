@@ -70,7 +70,7 @@ export default function ProductFormDialog({ open, onClose, onSubmit, product, lo
         update('image', data.imageUrl);
       }
     } catch (error) {
-      console.error('Erro ao fazer upload:', error);
+      // Upload failed silently
     } finally {
       setUploading(false);
     }

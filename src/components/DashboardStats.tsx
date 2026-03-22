@@ -7,10 +7,10 @@ interface Props {
 
 export default function DashboardStats({ products }: Props) {
   const totalProducts = products.length;
-  const totalItems = products.reduce((sum, p) => sum + p.quantity, 0);
-  const lowStock = products.filter(p => p.quantity <= p.min_quantity && p.quantity > 0).length;
-  const outOfStock = products.filter(p => p.quantity === 0).length;
-  const totalValue = products.reduce((sum, p) => sum + (p.sell_price ?? 0) * p.quantity, 0);
+  const totalItems = products.reduce((sum, product) => sum + product.quantity, 0);
+  const lowStock = products.filter(product => product.quantity <= product.min_quantity && product.quantity > 0).length;
+  const outOfStock = products.filter(product => product.quantity === 0).length;
+  const totalValue = products.reduce((sum, product) => sum + (product.sell_price ?? 0) * product.quantity, 0);
 
   const stats = [
     { label: 'Produtos', value: totalProducts, icon: Package, color: 'bg-primary/10 text-primary' },
@@ -25,7 +25,6 @@ export default function DashboardStats({ products }: Props) {
         <div
           key={stat.label}
           className="rounded-xl border border-border/60 bg-card p-4 shadow-sm hover:shadow-md transition-shadow"
-          style={{ animation: `fade-in-up 0.5s cubic-bezier(0.16,1,0.3,1) ${i * 80}ms forwards`, opacity: 0 }}
         >
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-muted-foreground">{stat.label}</span>
