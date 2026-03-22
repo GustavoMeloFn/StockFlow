@@ -1,5 +1,5 @@
 {
-  "name": "stock-hub-backend",
+  "name": "controle-estoque-backend",
   "version": "1.0.0",
   "type": "module",
   "scripts": {
@@ -10,6 +10,8 @@
     "better-sqlite3": "^11.0.0",
     "cors": "^2.8.5",
     "express": "^4.19.2",
+    "firebase-admin": "^13.7.0",
+    "multer": "^2.1.1",
     "uuid": "^10.0.0"
   }
 }

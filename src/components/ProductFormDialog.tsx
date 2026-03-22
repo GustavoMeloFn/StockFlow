@@ -17,8 +17,10 @@ interface Props {
 export default function ProductFormDialog({ open, onClose, onSubmit, product, loading }: Props) {
   const [form, setForm] = useState({
     name: '', sku: '', category: '', description: '', unit: 'un',
-    cost_price: 0, sell_price: 0, quantity: 0, min_quantity: 0,
+    cost_price: 0, sell_price: 0, quantity: 0, min_quantity: 0, image: '',
   });
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     if (product) {
@@ -32,9 +34,10 @@ export default function ProductFormDialog({ open, onClose, onSubmit, product, lo
         sell_price: product.sell_price ?? 0,
         quantity: product.quantity,
         min_quantity: product.min_quantity,
+        image: product.image ?? '',
       });
     } else {
-      setForm({ name: '', sku: '', category: '', description: '', unit: 'un', cost_price: 0, sell_price: 0, quantity: 0, min_quantity: 0 });
+      setForm({ name: '', sku: '', category: '', description: '', unit: 'un', cost_price: 0, sell_price: 0, quantity: 0, min_quantity: 0, image: '' });
     }
   }, [product, open]);
 
@@ -44,6 +47,34 @@ export default function ProductFormDialog({ open, onClose, onSubmit, product, lo
   };
 
   const update = (key: string, value: any) => setForm(prev => ({ ...prev, [key]: value }));
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setSelectedFile(file);
+      uploadImage(file);
+    }
+  };
+
+  const uploadImage = async (file: File) => {
+    setUploading(true);
+    const formData = new FormData();
+    formData.append('image', file);
+    try {
+      const res = await fetch('http://localhost:3000/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+      const data = await res.json();
+      if (data.imageUrl) {
+        update('image', data.imageUrl);
+      }
+    } catch (error) {
+      console.error('Erro ao fazer upload:', error);
+    } finally {
+      setUploading(false);
+    }
+  };
 
   return (
     <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
@@ -87,6 +118,12 @@ export default function ProductFormDialog({ open, onClose, onSubmit, product, lo
                 <Input type="number" value={form.quantity} onChange={e => update('quantity', +e.target.value)} min={0} />
               </div>
             )}
+          </div>
+          <div className="space-y-2">
+            <Label>Imagem</Label>
+            <Input type="file" accept="image/*" onChange={handleFileChange} disabled={uploading} />
+            {uploading && <p className="text-sm text-gray-500">Fazendo upload...</p>}
+            {form.image && <img src={`http://localhost:3000${form.image}`} alt="Preview" className="w-20 h-20 object-cover mt-2" />}
           </div>
           <div className="flex justify-end gap-2 pt-2">
             <Button type="button" variant="outline" onClick={onClose}>Cancelar</Button>

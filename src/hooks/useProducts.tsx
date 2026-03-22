@@ -14,6 +14,7 @@ export type Product = {
   sell_price: number | null;
   quantity: number;
   min_quantity: number;
+  image: string | null;
   created_at: string;
   updated_at: string;
 };

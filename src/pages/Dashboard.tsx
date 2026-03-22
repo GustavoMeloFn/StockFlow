@@ -47,7 +47,7 @@ export default function Dashboard() {
             <span className="text-lg font-bold text-foreground hidden sm:inline">Estoque</span>
           </div>
           <div className="flex items-center gap-3">
-            <span className="text-sm text-muted-foreground hidden sm:inline">{user?.email}</span>
+            <span className="text-sm text-muted-foreground hidden sm:inline">{user?.storeName}</span>
             <Button variant="ghost" size="icon" onClick={signOut} className="active:scale-[0.95]">
               <LogOut className="h-4 w-4" />
             </Button>
@@ -99,6 +99,7 @@ export default function Dashboard() {
                 <TableHeader>
                   <TableRow>
                     <TableHead>Produto</TableHead>
+                    <TableHead className="hidden sm:table-cell">Imagem</TableHead>
                     <TableHead className="hidden sm:table-cell">SKU</TableHead>
                     <TableHead className="hidden md:table-cell">Categoria</TableHead>
                     <TableHead className="text-right">Qtd</TableHead>
@@ -115,6 +116,9 @@ export default function Dashboard() {
                       style={{ animation: `fade-in 0.3s ease-out ${i * 40}ms forwards`, opacity: 0 }}
                     >
                       <TableCell className="font-medium">{p.name}</TableCell>
+                      <TableCell className="hidden sm:table-cell">
+                        {p.image ? <img src={`http://localhost:3000${p.image}`} alt={p.name} className="w-10 h-10 object-cover rounded" /> : '—'}
+                      </TableCell>
                       <TableCell className="hidden sm:table-cell text-muted-foreground">{p.sku || '—'}</TableCell>
                       <TableCell className="hidden md:table-cell text-muted-foreground">{p.category || '—'}</TableCell>
                       <TableCell className="text-right tabular-nums font-semibold">{p.quantity} {p.unit}</TableCell>
