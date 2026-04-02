@@ -8,7 +8,7 @@ import DashboardStats from '@/components/DashboardStats';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
-  Package, Plus, Sun, Moon, LogOut, Pencil, Loader2, Search, Trash,
+  Package, Plus, Sun, Moon, LogOut, Pencil, Loader2, Search, Trash, ChevronUp, ChevronDown,
 } from 'lucide-react';
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
@@ -24,6 +24,8 @@ export default function Dashboard() {
   const [productInEdit, setProductInEdit] = useState<Product | null>(null);
   const [stockOpen, setStockOpen] = useState(false);
   const [selectedForStock, setSelectedForStock] = useState<Product | null>(null);
+  const [sortColumn, setSortColumn] = useState<string | null>(null);
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
 
   const filtered = products.filter((product) =>
     product.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -31,10 +33,55 @@ export default function Dashboard() {
     (product.category?.toLowerCase().includes(search.toLowerCase()))
   );
 
+  const sortedFiltered = [...filtered].sort((a, b) => {
+    if (!sortColumn) return 0;
+    let aVal: string | number, bVal: string | number;
+    switch (sortColumn) {
+      case 'Produto':
+        aVal = a.name.toLowerCase();
+        bVal = b.name.toLowerCase();
+        break;
+      case 'SKU':
+        aVal = (a.sku || '').toLowerCase();
+        bVal = (b.sku || '').toLowerCase();
+        break;
+      case 'Categoria':
+        aVal = (a.category || '').toLowerCase();
+        bVal = (b.category || '').toLowerCase();
+        break;
+      case 'Qtd':
+        aVal = a.quantity;
+        bVal = b.quantity;
+        break;
+      case 'Status':
+        aVal = a.quantity;
+        bVal = b.quantity;
+        break;
+      case 'Preço Venda':
+        aVal = a.sell_price || 0;
+        bVal = b.sell_price || 0;
+        break;
+      default:
+        return 0;
+    }
+    if (aVal < bVal) return sortDirection === 'asc' ? -1 : 1;
+    if (aVal > bVal) return sortDirection === 'asc' ? 1 : -1;
+    return 0;
+  });
+
   const getStockBadge = (product: Product) => {
     if (product.quantity === 0) return <Badge variant="destructive" className="text-[10px]">Sem estoque</Badge>;
     if (product.quantity <= product.min_quantity) return <Badge className="bg-warning text-warning-foreground text-[10px]">Baixo</Badge>;
     return <Badge variant="secondary" className="text-[10px]">OK</Badge>;
+  };
+
+  const handleSort = (column: string) => {
+    if (sortColumn === column) {
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortColumn(column);
+      setSortDirection('asc');
+    }
   };
 
   return (
@@ -70,13 +117,13 @@ export default function Dashboard() {
 
         <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between">
           <div className="relative w-full sm:w-72">
-            {/* <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               placeholder="Buscar produto..."
               value={search}
               onChange={e => setSearch(e.target.value)}
               className="pl-9"
-            /> */}
+            />
           </div>
           <Button
             onClick={() => { setProductInEdit(null); setOpenProduct(true); }}
@@ -104,17 +151,29 @@ export default function Dashboard() {
                 <TableHeader>
                   <TableRow>
                     <TableHead className="hidden sm:table-cell">Imagem</TableHead>
-                    <TableHead>Produto</TableHead>
-                    <TableHead className="hidden sm:table-cell">SKU</TableHead>
-                    <TableHead className="hidden md:table-cell">Categoria</TableHead>
-                    <TableHead className="text-right">Qtd</TableHead>
-                    <TableHead className="hidden sm:table-cell">Status</TableHead>
-                    <TableHead className="hidden lg:table-cell text-right">Preço Venda</TableHead>
+                    <TableHead className="cursor-pointer select-none" onClick={() => handleSort('Produto')}>
+                      Produto {sortColumn === 'Produto' && (sortDirection === 'asc' ? <ChevronUp className="inline h-4 w-4 ml-1" /> : <ChevronDown className="inline h-4 w-4 ml-1" />)}
+                    </TableHead>
+                    <TableHead className="hidden sm:table-cell cursor-pointer select-none" onClick={() => handleSort('SKU')}>
+                      SKU {sortColumn === 'SKU' && (sortDirection === 'asc' ? <ChevronUp className="inline h-4 w-4 ml-1" /> : <ChevronDown className="inline h-4 w-4 ml-1" />)}
+                    </TableHead>
+                    <TableHead className="hidden md:table-cell cursor-pointer select-none" onClick={() => handleSort('Categoria')}>
+                      Categoria {sortColumn === 'Categoria' && (sortDirection === 'asc' ? <ChevronUp className="inline h-4 w-4 ml-1" /> : <ChevronDown className="inline h-4 w-4 ml-1" />)}
+                    </TableHead>
+                    <TableHead className="text-right cursor-pointer select-none" onClick={() => handleSort('Qtd')}>
+                      Qtd {sortColumn === 'Qtd' && (sortDirection === 'asc' ? <ChevronUp className="inline h-4 w-4 ml-1" /> : <ChevronDown className="inline h-4 w-4 ml-1" />)}
+                    </TableHead>
+                    <TableHead className="hidden sm:table-cell cursor-pointer select-none" onClick={() => handleSort('Status')}>
+                      Status {sortColumn === 'Status' && (sortDirection === 'asc' ? <ChevronUp className="inline h-4 w-4 ml-1" /> : <ChevronDown className="inline h-4 w-4 ml-1" />)}
+                    </TableHead>
+                    <TableHead className="hidden lg:table-cell text-right cursor-pointer select-none" onClick={() => handleSort('Preço Venda')}>
+                      Preço Venda {sortColumn === 'Preço Venda' && (sortDirection === 'asc' ? <ChevronUp className="inline h-4 w-4 ml-1" /> : <ChevronDown className="inline h-4 w-4 ml-1" />)}
+                    </TableHead>
                     <TableHead className="text-right">Ações</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filtered.map((product, index) => (
+                  {sortedFiltered.map((product, index) => (
                     <TableRow
                       key={product.id}
                       className="group"
@@ -140,14 +199,14 @@ export default function Dashboard() {
                           >
                             <Pencil className="h-3.5 w-3.5" />
                           </Button>
-                          <Button
+                          {/* <Button
                             variant="ghost" size="icon"
                             className="h-8 w-8 text-orange-600 hover:text-orange-700 hover:bg-orange-50"
                             onClick={() => { setSelectedForStock(product); setStockOpen(true); }}
                             title="Ajustar Estoque"
                           >
                             <Package className="h-3.5 w-3.5" />
-                          </Button>
+                          </Button> */}
                           <Button
                             variant="ghost" size="icon"
                             className="h-8 w-8 text-red-600 hover:text-red-700 hover:bg-red-50"
