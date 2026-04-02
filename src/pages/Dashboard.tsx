@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useEffect } from 'react';
 import { useTheme } from 'next-themes';
 import { useAuth } from '@/hooks/useAuth';
 import { useProducts, Product } from '@/hooks/useProducts';
@@ -13,6 +14,12 @@ import {
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from '@/components/ui/table';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+} from '@/components/ui/pagination';
 import { Badge } from '@/components/ui/badge';
 
 export default function Dashboard() {
@@ -26,6 +33,8 @@ export default function Dashboard() {
   const [selectedForStock, setSelectedForStock] = useState<Product | null>(null);
   const [sortColumn, setSortColumn] = useState<string | null>(null);
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 10;
 
   const filtered = products.filter((product) =>
     product.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -83,6 +92,19 @@ export default function Dashboard() {
       setSortDirection('asc');
     }
   };
+
+  const totalPages = Math.ceil(sortedFiltered.length / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const endIndex = startIndex + ITEMS_PER_PAGE;
+  const paginatedData = sortedFiltered.slice(startIndex, endIndex);
+
+  const handlePageChange = (newPage: number) => {
+    setCurrentPage(newPage);
+  };
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [search, sortColumn, sortDirection]);
 
   return (
     <div className="min-h-screen bg-background">
@@ -146,8 +168,9 @@ export default function Dashboard() {
               <p className="text-sm mt-1">{search ? 'Tente outra busca' : 'Clique em "Novo Produto" para começar'}</p>
             </div>
           ) : (
-            <div className="overflow-x-auto">
-              <Table>
+            <div>
+              <div className="overflow-x-auto">
+                <Table>
                 <TableHeader>
                   <TableRow>
                     <TableHead className="hidden sm:table-cell">Imagem</TableHead>
@@ -173,7 +196,7 @@ export default function Dashboard() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {sortedFiltered.map((product, index) => (
+                  {paginatedData.map((product, index) => (
                     <TableRow
                       key={product.id}
                       className="group"
@@ -225,6 +248,30 @@ export default function Dashboard() {
                   ))}
                 </TableBody>
               </Table>
+              </div>
+              
+              {totalPages > 1 && (
+                <div className="border-t border-border/60 px-4 py-4">
+                  <Pagination className="justify-start">
+                    <PaginationContent className="ml-0">
+                      {Array.from({ length: totalPages }).map((_, index) => {
+                        const pageNumber = index + 1;
+                        return (
+                          <PaginationItem key={pageNumber}>
+                            <PaginationLink
+                              onClick={() => handlePageChange(pageNumber)}
+                              isActive={pageNumber === currentPage}
+                              className="cursor-pointer"
+                            >
+                              {pageNumber}
+                            </PaginationLink>
+                          </PaginationItem>
+                        );
+                      })}
+                    </PaginationContent>
+                  </Pagination>
+                </div>
+              )}
             </div>
           )}
         </div>
