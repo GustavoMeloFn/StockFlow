@@ -135,7 +135,7 @@ export default function Dashboard() {
 
       <main className="mx-auto max-w-7xl px-4 sm:px-6 py-6 space-y-6">
         {/* Report e dashboards referente ao estoque do usuário atual */}
-        {/* <DashboardStats products={products} /> */}
+        <DashboardStats products={products} />
 
         <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between">
           <div className="relative w-full sm:w-72">
